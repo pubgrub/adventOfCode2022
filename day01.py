@@ -8,6 +8,7 @@ with open( "01.data", "r") as file:
         lines.append( line.strip())
 file.close()
 
+lines.append('')
 calories = 0
 maxCalories = [ 0, 0, 0]
 for l in lines:
