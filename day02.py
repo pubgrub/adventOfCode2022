@@ -40,5 +40,5 @@ for str in games:
     if p2 == 'Z':
         score += scores[ p1 + ' ' + toWin[ p1]] * games[str]
 
-print( 'Result Task 1: ', score)
+print( 'Result Task 2: ', score)
 
