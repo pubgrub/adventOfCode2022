@@ -10,12 +10,11 @@ file.close()
 
 toWin = { 'A': 'Y', 'B': 'Z', 'C': 'X'}
 toLose = { 'A': 'Z', 'B': 'X', 'C': 'Y'}
-charPoints = { 'X': 1, 'Y': 2, 'Z': 3}
 
 scores = {}
 for i in list( 'ABC'):
     for j in list( 'XYZ'):
-        points = charPoints[ j]
+        points = ord(j) - 87
         if ord(j) - ord(i) == 23:
             points += 3
         elif toWin[i] == j:
