@@ -3,7 +3,7 @@
 
 #get input data
 lines = []
-with open( "01.data", "r") as file:
+with open( "data/01.data", "r") as file:
     for line in file:
         lines.append( line.strip())
 file.close()
