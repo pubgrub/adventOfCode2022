@@ -7,22 +7,20 @@ with open( "data/01.data", "r") as file:
     for line in file:
         lines.append( line.strip())
 file.close()
-
 lines.append('')
+
 calories = 0
-maxCalories = [ 0, 0, 0]
+calorieList = []
 for l in lines:
   if l:
     calories += int( l)
   else:
-    for i, m in enumerate( maxCalories):
-      if calories >= m:
-        maxCalories.insert( i, calories)
-        maxCalories.pop()
-        break
+    calorieList.append( calories)
     calories = 0
 
-#Task 1
-print( 'Result Task 1: ', maxCalories[0])
+calorieList.sort( reverse = True)
 
-print( 'Result Task 2', sum( maxCalories))
+#Task 1
+print( 'Result Task 1: ', calorieList[0])
+
+print( 'Result Task 2', sum( calorieList[:3]))
