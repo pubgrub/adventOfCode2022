@@ -1,9 +1,14 @@
 # AdventOfCode 2022
-# Day 02
+
+DAY = '02'
+TEST = 0
 
 #get input data
+testStr = 'test' if TEST else ''
+filename = "data/" + DAY + testStr + '.data'
 lines = []
-with open( "02.data", "r") as file:
+
+with open( filename, "r") as file:
     for line in file:
         lines.append( line.strip())
 file.close()

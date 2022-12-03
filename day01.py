@@ -1,12 +1,18 @@
 # AdventOfCode 2022
-# Day 01
+
+DAY = '01'
+TEST = 0
 
 #get input data
+testStr = 'test' if TEST else ''
+filename = "data/" + DAY + testStr + '.data'
 lines = []
-with open( "data/01.data", "r") as file:
+
+with open( filename, "r") as file:
     for line in file:
         lines.append( line.strip())
 file.close()
+
 lines.append('')
 
 calories = 0
