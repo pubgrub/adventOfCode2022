@@ -14,7 +14,7 @@ file.close()
 def search( n):
   groups = [ line[i:i + n] for i in range( 0, len(line) - n + 1, 1)]
   for i, g in enumerate( groups):
-    if len(''.join(set(g))) == len( g):
+    if len(''.join(set(g))) == n:
       return( i + n)
 
 # Task 1
