@@ -45,18 +45,16 @@ for s in lines[procedureStartsAt:]:
 # Task 1
 stack1 = copy.deepcopy(stacks)
 for i, p in enumerate( moveCount):
-  toMove = stack1[moveFrom[i]][len(stack1[moveFrom[i]]) - p:]
+  stack1[moveTo[i]].extend( list(reversed(stack1[moveFrom[i]][len(stack1[moveFrom[i]]) - p:])))  
   stack1[moveFrom[i]] = stack1[moveFrom[i]][0: len(stack1[moveFrom[i]]) - p]
-  stack1[moveTo[i]].extend( list(reversed(toMove)))
 message = [ stack1[i][-1] for i in range( 0, len(stack1))]
 
 print( 'Result Task 1: ', ''.join(message))
 
 # Task 2
 for i, p in enumerate( moveCount):
-  toMove = stacks[moveFrom[i]][len(stacks[moveFrom[i]]) - p:]
+  stacks[moveTo[i]].extend( stacks[moveFrom[i]][len(stacks[moveFrom[i]]) - p:])  
   stacks[moveFrom[i]] = stacks[moveFrom[i]][0: len(stacks[moveFrom[i]]) - p]
-  stacks[moveTo[i]].extend( toMove)
 message = [ stacks[i][-1] for i in range( 0, len(stacks))]
 
 print( 'Result Task 2: ', ''.join(message))
