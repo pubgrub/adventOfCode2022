@@ -17,7 +17,6 @@ img =  [''] * 7
 
 def calcSignal( cycle, signal, x):
   y = cycle // 40
-
   if cycle % 40 >= x - 1 and cycle % 40 <= x + 1:
     img[y] += '#'
   else: 
