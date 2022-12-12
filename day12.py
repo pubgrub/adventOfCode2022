@@ -29,8 +29,6 @@ for y, l in enumerate(lines):
       c = 'z'
     board.append( ord(c ) - 97)
 
-# print( board)
-
 def getToCheck( p):
   ret = []
   x = p % maxX
@@ -39,23 +37,7 @@ def getToCheck( p):
   if x > 0: ret.append( p - 1) 
   if y < maxY - 1: ret.append( p + maxX)
   if y > 0: ret.append(  p - maxX)  
-#  print( ret)
   return ret
-
-# def solve( board, start, end):
-#   toCheck = { start: True}
-#   notVisited = maxY * maxX
-#   minCost = [ notVisited] * len(board)
-#   minCost[start] = 0
-
-#   while len(toCheck):
-#     ( sourcePos, dummy) = toCheck.popitem()
-#     for checkPos in getToCheck( sourcePos):
-#       if board[ checkPos] - board[ sourcePos] < 2:  # is reachable
-#         if minCost[ checkPos] > minCost[sourcePos] + 1: # new best cost
-#           minCost[ checkPos] = minCost[ sourcePos] + 1
-#           toCheck[checkPos] = True
-#   return minCost[ end]
 
 def solve( board, start, end):
   toCheck = { end: True}
