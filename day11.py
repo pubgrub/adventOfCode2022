@@ -1,7 +1,7 @@
 # AdventOfCode 2022
 
 DAY = '11'
-TEST = 1
+TEST = 0
 
 #get input data
 testStr = 'test' if TEST else ''
@@ -55,7 +55,6 @@ def solve1( rounds):
         inspected[ x] += 1
         monkeys[target]['items'].append( worry)
       monkeys[x]['items'] = []
-    print( r, inspected)
   return inspected
 
 def solve2( rounds):
@@ -90,23 +89,21 @@ def solve2( rounds):
   for i in range( 0, len(itemRests)):
     for m in monkeys:
       itemRests[i].append( items[i] % m['div'])
-  print( items)
-  print( itemRests)
 
   inspected = [ 0] * len(monkeys)
   for r in range( 0, rounds):
     for x, m in enumerate(monkeys):
       for i in m['items']:
-        worry = itemRests[ i][x]
-        if m['oldOpVal']:
-          opVal = worry
-        else:
-          opVal = m['opVal']
-        if m['op'] == '*':
-          worry *= opVal
-        elif m['op'] == '+':
-          worry += opVal
         for j in range( 0, len(monkeys)):
+          worry = itemRests[ i][j]
+          if m['oldOpVal']:
+            opVal = worry
+          else:
+            opVal = m['opVal']
+          if m['op'] == '*':
+            worry *= opVal
+          elif m['op'] == '+':
+            worry += opVal
           itemRests[i][j] = worry % monkeys[j]['div']
         target = m['target'][0] if itemRests[i][x] == 0 else m['target'][1]
         inspected[ x] += 1
@@ -122,7 +119,6 @@ result.sort( reverse = True)
 print( 'Result Task 1: ', result[0] * result[1])
 
 result = solve2( 10000)
-print( result)
 result.sort( reverse = True)
 
 
