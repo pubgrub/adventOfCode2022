@@ -111,8 +111,6 @@ def solve2( rounds):
       monkeys[x]['items'] = []
   return inspected
 
-# Task 1
-
 result = solve1( 20)
 result.sort( reverse = True)
 
@@ -120,7 +118,6 @@ print( 'Result Task 1: ', result[0] * result[1])
 
 result = solve2( 10000)
 result.sort( reverse = True)
-
 
 print( 'Result Task 2: ', result[0] * result[1])
 
