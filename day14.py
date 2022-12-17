@@ -36,7 +36,7 @@ for l in lines:
       for x in range( startX, endX + dir, dir):
         occ_orig[( x, startY) ] = ROCK
     maxY  = max( maxY, startY, endY)    
-    floor = maxY + 2
+floor = maxY + 2
 
 def solve( task):
   occ = copy.deepcopy( occ_orig)
