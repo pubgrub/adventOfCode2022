@@ -1,3 +1,4 @@
+import time
 # AdventOfCode 2022
 
 DAY = '17'
@@ -9,30 +10,30 @@ filename = "data/" + DAY + testStr + '.data'
 lines = []
 
 with open( filename, "r") as file:
-  for line in file:
-    lines.append( line.strip())
+	for line in file:
+		lines.append( line.strip())
 file.close()
 
 arrows = lines[0]
 
 bricks = [  [0b00111100],
-      
-      			[0b00010000,
-       			 0b00111000,
-       			 0b00010000],
+			
+						[0b00010000,
+			 			 0b00111000,
+			 			 0b00010000],
 
-      			[0b00001000,
-       			 0b00001000,
-       			 0b00111000],
+						[0b00111000,
+			 			 0b00001000,
+			 			 0b00001000],
 
-      			[0b00100000,
-       			 0b00100000,
-       			 0b00100000,
-       			 0b00100000],
+						[0b00100000,
+			 			 0b00100000,
+			 			 0b00100000,
+			 			 0b00100000],
 
-			      [0b00110000,
-      			 0b00110000] 
-    ]
+						[0b00110000,
+						 0b00110000] 
+		]
 
 emptyRow =  0b100000001
 bottomRow = 0b111111111
@@ -41,7 +42,7 @@ NEWBRICK = 0
 HORIZONTAL = 1
 VERTICAL = 2
 
-def solve():
+def solve( lastBrick):
 	towerHeight = 1
 	numBricks = 0
 	rows = [bottomRow]
@@ -52,67 +53,62 @@ def solve():
 	brick = []
 
 	while True:
-		if numBricks == 2022:
+		if numBricks == lastBrick:
 			break
 		if action == NEWBRICK:
 			brickPos += 1
 			if brickPos == len(bricks):
 				brickPos = 0
 			brickY = lastFilledRow + 4
-			rowsToCreate =   brickY + len(bricks[ brickPos]) - (len(rows) - 1)
-			for i in range(0, rowsToCreate):
-				rows.append(emptyRow)
+			rows += [emptyRow] * ( brickY + len(bricks[ brickPos]) - (len(rows) - 1))
 			brick = bricks[brickPos].copy()				
-			#print( brick)
 			action = HORIZONTAL
-#			draw(rows)
 
 		elif action == HORIZONTAL:
 			arrowPos += 1
 			if arrowPos == len(arrows):
 				arrowPos = 0
-			dir = 2 if arrows[arrowPos] == '<' else 0.5
-			#print( dir)
 			collision = False
-			for i,b in enumerate(brick):
-				if int(b * dir) & rows[ brickY + i]:
-					collision = True
-			if not collision:
+			if arrows[arrowPos] == '<':
 				for i,b in enumerate(brick):
-					brick[i] = int( brick[i] * dir)
-#				draw(rows)
-
+					if b + b & rows[ brickY + i]:
+						collision = True
+						break
+				if not collision:
+					for i in range( 0, len( brick)):
+						brick[i] += brick[i]
+			else:	
+				for i,b in enumerate(brick):
+					if b >> 1 & rows[ brickY + i]:
+						collision = True
+						break
+				if not collision:
+					for i in range( 0, len( brick)):
+						brick[i] >>= 1
+	 
 			action = VERTICAL
 
 		elif action == VERTICAL:
 			collision = False
 			for i,b in enumerate(brick):
-				if b  & rows[ brickY + i - 1]:
+				if b & rows[ brickY + i - 1]:
 					collision = True
+					break
 			if not collision:
 				brickY -= 1
 				action = HORIZONTAL
 			else:
 				for i,b in enumerate( brick):
 					rows[brickY + i] |= b
-				for i in range( len(rows)-1 , -1, -1):
-					if rows[i] != emptyRow:
-						lastFilledRow = i
-						break
-				towerHeight = lastFilledRow
-				print( towerHeight)
+				lastFilledRow = max( lastFilledRow, brickY + len(brick) - 1)
 				numBricks += 1
 				action = NEWBRICK	
-				draw(rows)
 
-	print( '***',len(rows))
-	return towerHeight
+	return lastFilledRow
 				
-def draw(rows):
-	for i in range( len(rows) -1, -1, -1):
-		print(format( rows[i], 'b'))
-	print( "*****")
+# Task 1
 
-result = solve()
-print( result)
+result = solve( 2022)
+print( "Result Task 1: ", result)
+
 
