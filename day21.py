@@ -2,7 +2,7 @@ import copy
 # AdventOfCode 2022
 
 DAY = '21'
-TEST = 0
+TEST =0
 
 #get input data
 testStr = 'test' if TEST else ''
@@ -16,51 +16,73 @@ file.close()
 
 solvedOrig = {}
 toDoOrig = {}
+codes = []
 
 for l in lines:
   s = l.replace( ":", "").split( ' ')
   if len(s) == 2:
     solvedOrig[ s[0]] = int(s[1])
+    if not s[0] in codes:
+      codes.append( s[0])
   else:
     if s[0] == 'root':
       rootPart1 = s[1]
       rootPart2 = s[3]
     toDoOrig[ s[0]] = ([ s[1], s[3], s[2]])
+    del s[2]
+    for i in s:
+      if not i in codes:
+        codes.append( i)
       
 
 def solve1( elem):
   if elem in solved:
     return solved[elem]
   else:
-    if toDo[elem][2] == '+':
+    op = toDo[elem][2]
+    if op == '+':
       return( solve1( toDo[elem][0]) + solve1(toDo[elem][1]))
-    elif toDo[elem][2] == '-':
+    elif op == '-':
       return( solve1( toDo[elem][0]) - solve1(toDo[elem][1]))
-    elif toDo[elem][2] == '*':
+    elif op == '*':
       return( solve1( toDo[elem][0]) * solve1(toDo[elem][1]))
-    elif toDo[elem][2] == '/':
+    elif op == '/':
       return( int(solve1( toDo[elem][0]) / solve1(toDo[elem][1])))
 
-def getAllCodes(lines):
-  codes = []
-  for l in lines:
-    s = l.replace( ":", "").split( ' ')
-    if len(s) == 2:
-      if not s[0] in codes:
-        codes.append( s[0])
-    else:
-      del s[2]
-      for i in s:
-        if not i in codes:
-          codes.append( i)
-  return codes
+def solve2( elem, result):
+  if elem == 'humn':
+    return result
+  else:
+    for i in [ 0, 1]:
+      if toDo[elem][i] in solved:
+        solved_elem_value = solved[toDo[elem][i]]
+      else:
+        dep_elem = i
+        dep_elem_value = toDo[elem][i]
+    op = toDo[elem][2]
+    if op == "=":
+      return( solve2( dep_elem_value, solved_elem_value ))
+    elif op == "+":
+      return( solve2( dep_elem_value, result - solved_elem_value))      
+    elif op == "-":
+      if dep_elem == 0:
+        return( solve2( dep_elem_value, result + solved_elem_value))      
+      else:
+        return( solve2( dep_elem_value, solved_elem_value - result))      
+    elif op == "*":
+      return( solve2( dep_elem_value, int( result / solved_elem_value)))      
+    elif op == "/":
+      if dep_elem == 0:
+        return( solve2( dep_elem_value, result * solved_elem_value))      
+      else:
+        return( solve2( dep_elem_value, int( solved_elem_value / result)))      
 
 # Task 1
 
 toDo = copy.deepcopy( toDoOrig)
 solved = copy.deepcopy( solvedOrig)
 
-print( 'Task 1: ', solve1( 'root'))
+print( 'Result Task 1: ', solve1( 'root'))
 
 # Task 2
 
@@ -68,7 +90,9 @@ toDo = copy.deepcopy( toDoOrig)
 solved = copy.deepcopy( solvedOrig)
 
 dep = ['humn']
-indep = getAllCodes( lines)
+indep = codes.copy()
+indep.remove( 'humn')
+solved.pop( 'humn')
 
 # move dependent codes from indep to dep
 done = False
@@ -81,47 +105,10 @@ while not done:
         indep.remove( t)
         done = False
 
+# solve all indep into solved
+for i in indep:
+  solved[ i] = solve1( i)
 
+toDo['root'][2] = '='
 
-
-print( len(indep), len(set(indep)))
-print( len(dep), len(set(dep)))
-print( dep)
-
-exit()
-
-humn = -1000
-done = False
-while not done:
-  toDo = copy.deepcopy( toDoOrig)
-  solved = copy.deepcopy( solvedOrig)
-  humn += 1
-  if humn % 100 == 0:
-    print( humn)
-  solved['humn'] = humn
-
-  while len(toDo):
-    toDelete = []
-    for k, v in toDo.items():
-      if not ( v[0] in solved  and v[1] in solved):
-        continue
-      else:
-        if v[2] == '+':
-          solved[k] = solved[ v[0]] + solved[ v[1]]
-        elif v[2] == '-':
-          solved[k] = solved[ v[0]] - solved[ v[1]]
-        elif v[2] == '*':
-          solved[k] = solved[ v[0]] * solved[ v[1]]
-        elif v[2] == '/':
-          solved[k] = int(solved[ v[0]] / solved[ v[1]])
-        toDelete.append( k)
-    for d in toDelete:
-      toDo.pop( d)
-  if solved[rootPart1] == solved[rootPart2]:
-    done = True
-
-print( 'Task 2: ', humn)
-
-
-
-
+print( 'Result Task 2: ', solve2( 'root', 0))
