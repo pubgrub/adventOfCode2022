@@ -17,7 +17,7 @@ def solve1():
   dubl = {}
   blocks = {}
   minCoord = [99999, 99999, 99999]
-  maxCoord = [-1, -1, -1]
+  maxCoord = [-9999, -9999, -9999]
   offs = [[1,0,0], [0,1,0], [0,0,1]]
   for l in lines:
     c = [int(i) for i in l.split(',')]
@@ -43,30 +43,22 @@ def outOfBounds( c):
 
 neighborBlocks = [(1,0,0),(-1,0,0),(0,1,0),(0,-1,0),(0,0,1),(0,0,-1)]
 
-def fill( c):
+def fill():
   while blocksToCheck:
-    c = blocksToCheck[0]
-    if c in blocks:
-      print( 'Block already known: ', c)
-      blocks
-    if outOfBounds( c):
-      print( 'Out of Bounds: ', c)
-      return
+    (c, dummy) = blocksToCheck.popitem()
+    if c in blocks or outOfBounds(c):
+      continue
     blocks[ c] = 'water'
     offs = [(1,0,0), (0,1,0), (0,0,1)]
     for plane in range( 0, 3):
-      #print ( tuple([plane]) + c )
       if tuple([plane]) + c in surfaces:
         surfaces[tuple([plane]) + c] = 1
       c1 = tuple( map(lambda i, j: i + j, c, offs[plane]))
-      #print( c, plane, offs[plane], c1)
       if tuple([plane]) + c1 in surfaces:
         surfaces[tuple([plane]) + c1] = 1
-        print( 'New surface: ', surfaces)
-
-    for n in neighborBlocks:
-      neighbor = tuple( map(lambda i, j: i + j, c, n))
-      fill( neighbor)
+      for n in neighborBlocks:
+        neighbor = tuple( map(lambda i, j: i + j, c, n))
+        blocksToCheck[neighbor] = True
 
 # Task 1
 
@@ -77,10 +69,8 @@ print( 'Result Task 1: ', len(surfaces))
 
 # Task 2
 
-
-blocksToCheck = (minCoord[0] - 1, minCoord[1] - 1, minCoord[2] -1)
+blocksToCheck = { (minCoord[0] - 1, minCoord[1] - 1, minCoord[2] -1): True }
 fill()
-
 openSurfaces = { key:val for key, val in surfaces.items() if val == 1}
 
-print( len(openSurfaces))
+print( 'Result Task 2: ', len(openSurfaces))
