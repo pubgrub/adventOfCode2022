@@ -2,7 +2,7 @@ import re, time
 # AdventOfCode 2022
 
 DAY = '19'
-TEST = 1
+TEST = 0
 
 #get input data
 testStr = 'test' if TEST else ''
@@ -41,19 +41,10 @@ def advance(inv, bots, time):
     return 
   else:
     seen[ tuple(inv), tuple(bots), time] = maxGeodes
-  if inv[GEO]:
-    maxGeodes = max( maxGeodes, inv[GEO])
-    if inv[GEO] in minTimeGeo:
-      if minTimeGeo[inv[GEO]] > time:
-        return
-      elif minTimeGeo[inv[GEO]] < time:
-        minTimeGeo[inv[GEO]] = time      
-    else:
-      minTimeGeo[inv[GEO]] = time
-  if time == 10:
-    print( inv, bots, time)
+  maxGeodes = max( maxGeodes, inv[GEO])
+
   if time > 0:
-    for i in range( 0, len(inv)):
+    for i in range( len(inv) - 1, -1, -1):
       canAfford = True
       for ore, amount in costs[i].items():
         if inv[ore] < amount:
@@ -63,43 +54,72 @@ def advance(inv, bots, time):
         new_inv = mine( inv, bots)
         if time >= 4 or ( time == 3 and i != CLAY) or ( time == 2 and i == GEO):
           new_inv, new_bots = buildBot( i, new_inv, bots)    
+          if i == GEO:
+            if new_bots[GEO] in minTimeGeoBots:
+              if minTimeGeoBots[new_bots[GEO]] > time:
+                return
+              elif minTimeGeoBots[new_bots[GEO]] < time:
+                minTimeGeoBots[new_bots[GEO]] = time      
+            else:
+              minTimeGeoBots[new_bots[GEO]] = time
+            
           advance( new_inv, new_bots, time - 1) 
         else:
           maxGeodes = max( maxGeodes, inv[GEO])
     new_inv = mine( inv, bots)     
+    
     advance( new_inv, bots, time - 1)
   return     
 
-# Task 1
+#Task 1
 
 inv = [0, 0, 0, 0] 
 bots = (1, 0, 0, 0)
 costs = { 0: {0:0}, 1: {0:0}, 2: {0:0, 1:0}, 3: {0:0, 2:0} }
 
-# for l in lines:
+score = 0
+for l in lines:
+  x = re.match( pattern, l )
+  id, costs[0][0], costs[1][0], costs[2][0], costs[2][1], costs[3][0], costs[3][2]  = tuple( int(i) for i in list(x.groups()))
+
+  print( costs)
+
+  maxGeodes = 0
+  seen = {}
+  steps = 24
+
+  minTimeGeoBots = {}
+  minTimeObs = {}
+  minTimeClay = {}
+
+  t1 = time.time()
+  advance( inv, bots, steps)
+  score += maxGeodes * id
+  print( time.time() - t1, id, maxGeodes, score)
+
+# Task 2
+
+# inv = [0, 0, 0, 0] 
+# bots = (1, 0, 0, 0)
+# costs = { 0: {0:0}, 1: {0:0}, 2: {0:0, 1:0}, 3: {0:0, 2:0} }
+
+# score = 1
+# for l in lines[0:3]:
 #   x = re.match( pattern, l )
 #   id, costs[0][0], costs[1][0], costs[2][0], costs[2][1], costs[3][0], costs[3][2]  = tuple( int(i) for i in list(x.groups()))
 
 #   print( costs)
-  
-#   dupl = 0
+
+#   maxGeodes = 0
 #   seen = {}
-#   time = 24
-#   print( advance( inv, bots, costs, time, 0))
+#   steps = 32
 
-l = lines[0]
-x = re.match( pattern, l )
-id, costs[0][0], costs[1][0], costs[2][0], costs[2][1], costs[3][0], costs[3][2]  = tuple( int(i) for i in list(x.groups()))
+#   minTimeGeo = {}
+#   minTimeObs = {}
+#   minTimeClay = {}
 
-print( costs)
+#   t1 = time.time()
+#   advance( inv, bots, steps)
+#   score *= maxGeodes
+#   print( time.time() - t1, id, maxGeodes, score)
 
-maxGeodes = 0
-seen = {}
-steps = 24
-
-minTimeGeo = {}
-
-t1 = time.time()
-advance( inv, bots, steps)
-print( maxGeodes)
-print( time.time() - t1)
