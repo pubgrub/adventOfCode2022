@@ -1,4 +1,4 @@
-import copy
+import copy,time
 # AdventOfCode 2022
 
 DAY = '24'
@@ -14,11 +14,8 @@ with open( filename, "r") as file:
 		lines.append( line.strip())
 file.close()
 
-print( len(lines), len(lines[0]))
-
 yWalkers = {}
 xWalkers = {}
-
 for y in range( 0, len(lines) - 2):
 	xWalkers[y] = []
 for x in range( 0, len(lines[0]) - 2):
@@ -42,58 +39,71 @@ for y, l in enumerate(lines):
 				yWalkers[x - 1].append( (y - 1,dir) )
 			else:
 				xWalkers[y - 1].append( (x - 1,dir) )
-print( xWalkers)
-print( yWalkers)
-print( start, goal)
-print( -5 % 4)
 
-toDo = {(start, 1):''}
-fastest = 99999
 neighbors = [(0,0),(1,0),(0,1),(-1,0),(0,-1)]
 minY = 0
 maxY = len(lines) - 3
 minX = 0
 maxX = len(lines[0]) - 3
 
-print( minX, maxX, minY, maxY)
+knownNeighbors = {}
 
-done = {}
-while toDo:
-	((xPos, yPos), move) = list(toDo)[0]
-	toDo.pop( ((xPos, yPos), move))
-	if (xPos,yPos) == goal:
-		fastest = min(fastest, move - 1)
-		continue		
-	if move > fastest:
-		continue
-	if ((xPos, yPos),move) in done:
-		continue
-	else:
-		done[((xPos,yPos,),move)] = ''
-	toCheck = {}
-	for dx,dy in neighbors:
-		x = xPos + dx
-		y = yPos + dy
-		if (x,y) == start or (x,y) == goal or ( x >= minX and  x <= maxX and y >= minY and y <= maxY):
-			toCheck[(x,y)] = True
-	#print( 'neighbors: ', toCheck)
-	for cX in range( max(xPos - 1, minX), min(xPos + 1, maxX) + 1):
-		#print( xPos, minX, maxX, cX)
-		for (InitialWalkerY, walkerDir) in yWalkers[cX]:
-			walkerY = (InitialWalkerY + move * walkerDir) % (maxY + 1)
-			if ( cX, walkerY) in toCheck:
-				toCheck.pop( (cX, walkerY))
-			#print( 'ywalker:', InitialWalkerY, walkerDir, walkerY)
-	for cY in range( max(yPos - 1, minY), min(yPos + 1, maxY) + 1):
-		#print( yPos, minY, maxY, cY)		
-		for (InitialWalkerX, walkerDir) in xWalkers[cY]:
-			walkerX = (InitialWalkerX + move * walkerDir) % (maxX + 1)
-			if ( walkerX,cY) in toCheck:
-				toCheck.pop( (walkerX, cY))
-			#print( 'Xwalker:', InitialWalkerX, walkerDir, walkerX)
-	#print( 'valid Neighbors: ', toCheck)
-	for newMoves in toCheck:
-		toDo[newMoves, move + 1] = ''
-	#print( 'new List to do: ', toDo)
+def solve(start, goal, move):
+	toDo = {(start, move):''}
+	fastest = 99999
+	done = {}
+	while toDo:
+		((xPos, yPos), move) = list(toDo)[0]
+		toDo.pop( ((xPos, yPos), move))
+		if (xPos,yPos) == goal:
+			fastest = min(fastest, move - 1)
+			continue		
+		if move > fastest:
+			continue
+		if ((xPos, yPos),move) in done:
+			continue
+		else:
+			done[((xPos,yPos,),move)] = ''
+		if ( xPos,yPos,start) in knownNeighbors:
+			toCheck = copy.copy(knownNeighbors[ (xPos,yPos, start)])
+		else:
+			toCheck = {}
+			for dx,dy in neighbors:
+				x = xPos + dx
+				y = yPos + dy
+				if (x,y) == start or (x,y) == goal or ( x >= minX and  x <= maxX and y >= minY and y <= maxY):
+					toCheck[(x,y)] = True
+			knownNeighbors[ (xPos,yPos,start)] = copy.copy(toCheck)
 
-print( fastest)
+		for cX in range( max(xPos - 1, minX), min(xPos + 1, maxX) + 1):
+			for (InitialWalkerY, walkerDir) in yWalkers[cX]:
+				walkerY = (InitialWalkerY + move * walkerDir) % (maxY + 1)
+				if ( cX, walkerY) in toCheck:
+					toCheck.pop( (cX, walkerY))
+
+		for cY in range( max(yPos - 1, minY), min(yPos + 1, maxY) + 1):
+			for (InitialWalkerX, walkerDir) in xWalkers[cY]:
+				walkerX = (InitialWalkerX + move * walkerDir) % (maxX + 1)
+				if ( walkerX,cY) in toCheck:
+					toCheck.pop( (walkerX, cY))
+
+		for newMoves in toCheck:
+			toDo[newMoves, move + 1] = ''
+	return fastest
+
+t1 = time.time()
+move = 0
+results = []
+for i in range(0,3):
+	results.append( solve(start, goal, move))
+	start, goal = goal, start
+	move = results[-1]
+print( time.time() - t1)
+
+# Task 1
+
+print( 'Result Task 1: ', results[0])
+
+# Task 2
+
+print( 'Result Task 2: ', results[2])
