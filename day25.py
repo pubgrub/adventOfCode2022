@@ -22,8 +22,6 @@ def dec2Snafu( n):
     r = n % 5
     if r > 2:
       r -= 5
-    elif r < -2:
-      r += 5
     t += char[r]
     n = int((n - r) / 5)
   return (t[::-1])
