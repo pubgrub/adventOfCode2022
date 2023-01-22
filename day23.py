@@ -33,7 +33,7 @@ def getMinMax(positions):
     yMax = max(yMax, y)
   return(xMin, xMax, yMin, yMax)
 
-def getRect( positions):
+def getFreeInRect( positions):
   (xMin, xMax, yMin, yMax) = getMinMax(positions)
   return (xMax - xMin + 1) * ( yMax - yMin + 1) - len(positions)
 
@@ -76,7 +76,7 @@ while anyElveHasMoved:
     positions[newPos] = ''
   checkOrder.append(checkOrder.pop(0))
   if r == 10:
-    task1Solution = getRect( positions)   
+    task1Solution = getFreeInRect( positions)   
 
 print( 'Result Task 1: ', task1Solution)
 print( 'Result Task 2: ', r)
