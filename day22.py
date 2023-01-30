@@ -4,6 +4,7 @@ import re
 DAY = '22'
 TEST = 0
 
+
 #get input data
 testStr = 'test' if TEST else ''
 filename = "data/" + DAY + testStr + '.data'
@@ -11,20 +12,19 @@ lines = []
 
 with open( filename, "r") as file:
 	for line in file:
-		lines.append( line[:-1])
+		lines.append( line.rstrip('\n'))
 file.close()
 
 
 steps = [(1,0),(0,1),(-1,0),(0,-1)]
-
 def getNewPos(pos, dir):
   return (pos[0] + steps[dir][0], pos[1] + steps[dir][1]  )
 
 lines.insert(0,'')
-pOrder = re.compile('(\d+)([LR])')
+pOrder = re.compile('(\d+)([LRN])')
 walkList = []
-turnValue = {'L': -1, 'R':1}
-l = lines.pop()
+turnValue = {'L': -1, 'R':1, 'N':0}
+l = lines.pop() + 'N'
 for match in  pOrder.finditer(l):
   walkList.append((int(match.group(1)), turnValue[match.group(2)])) 
 
@@ -41,9 +41,6 @@ for i in range(0,len(lines)):
   lines[i] = (' ' + lines[i] + ' ' * (xMax + 1))[:xMax + 1]
 
 cols = ['' for _ in range(xMax + 1)] 
-print( lines)
-
-
 p1 = re.compile('(\s*)([\.#]+)')
 p2 = re.compile('#')
 for y, l in enumerate(lines):
@@ -61,7 +58,6 @@ for y, l in enumerate(lines):
 
 
 for x, l in enumerate(cols[1:-1]):
-  print('l: ', l)
   m1 = p1.match(l)
   yStart.append(len(m1.group(1)))
   yLen.append(len(m1.group(2)))
@@ -71,12 +67,9 @@ for x, l in enumerate(cols[1:-1]):
   for w in m2:
     yWalls[x].append( w.start() + yStart[x])    
 
-
-
 dir = 0
-
 pos = (xStart[1],1)
-print('pos: ',pos)
+
 for (dist,turn) in walkList:
   wrap = False
   while dist:
@@ -88,7 +81,6 @@ for (dist,turn) in walkList:
     symbol = lines[newPos[1]][newPos[0]]     
     if symbol == '.':
       pos = newPos
-      print( 'pos: ', pos)
       dist -= 1
     elif symbol == '#':
       dist = 0
@@ -104,19 +96,4 @@ for (dist,turn) in walkList:
         newPos = (pos[0],yStart[pos[0]] + yLen[pos[0]])
   dir = (dir + turn) % 4
 
-
-
-
-
-
-print( cols)
-print( xStart, xLen)
-print( xWalls)
-print( yStart, yLen)
-print( yWalls)
-print( pos, dir)
 print( pos[0] * 4 + pos[1] * 1000 + dir)
-
-
-
-
