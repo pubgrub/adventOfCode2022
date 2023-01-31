@@ -1,10 +1,15 @@
 # AdventOfCode 2022
 
 DAY = '20'
-TEST = 0
+TEST = 2
 
 #get input data
-testStr = 'test' if TEST else ''
+if TEST == 1:
+  testStr = 'test'
+elif TEST == 2:
+  testStr = 'mytest'
+else:
+  testStr = ''
 filename = "data/" + DAY + testStr + '.data'
 lines = []
 
@@ -23,16 +28,20 @@ for l in lines:
 
 order = nList.copy()
 
+print( nList)
 for i in order:
   idx = nList.index( i)
   if i != 0:
     nList.pop( idx)
     if i > 0:
-      newIdx = (idx + i ) % (len(order) )
+      newIdx = (idx + i ) % (len(nList) )
     elif i < 0:
-      newIdx = (idx + i - 1) % (len(order) ) 
-    nList.insert( newIdx + 1, i)
-  #print( i, idx, newIdx, nList)
+      newIdx = (idx + i ) % (len(nList) ) 
+    nList.insert( newIdx , i)
+  else:
+    newIdx = idx
+  if TEST:
+    print( i, idx, newIdx, nList)
   
 zIdx = nList.index(0) 
 sum = 0
