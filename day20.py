@@ -1,7 +1,7 @@
 # AdventOfCode 2022
 
 DAY = '20'
-TEST = 2
+TEST = 1
 
 #get input data
 if TEST == 1:
@@ -45,6 +45,7 @@ for i in order:
   
 zIdx = nList.index(0) 
 sum = 0
+print( zIdx)
 for i in range( 1,4):
   print( zIdx + i * 1000, nList[(zIdx + 1000 * i) % len(nList)])
   sum +=  nList[(zIdx + 1000 * i) % len(nList)]
